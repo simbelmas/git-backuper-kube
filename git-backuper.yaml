@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: git-backuper
+  labels:
+    app.kubernetes.io/name: git-backuper
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: git-backuper-cm
+  labels:
+    app.kubernetes.io/name: git-backuper
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: git-backuper-pvc
+  labels:
+    app.kubernetes.io/name: git-backuper
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+  storageClassName: managed-nfs-storage
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: git-backuper
+  labels: &git-backuper-labels
+    app.kubernetes.io/name: git-backuper
+spec:
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+      labels: *git-backuper-labels
+    spec:
+      ttlSecondsAfterFinished: 259200
+      backoffLimit: 1
+      template:
+        spec:
+          containers:
+          - name: git-backuper
+            image: quay.io/simbelmas/alpine-tools:latest
+            command: ["/utils/backuper.sh"]
+            volumeMounts:
+              - name: backup-conf
+                mountPath: /utils
+              - name: backup-dir
+                mountPath: /backup-dir
+          volumes:
+          - name: backup-conf
+            configMap:
+              defaultMode: 0655
+              name: git-backuper-cm
+          - name: backup-dir
+            emptyDir: {}
+          restartPolicy: Never
+
