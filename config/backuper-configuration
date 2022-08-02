@@ -1,1 +1,2 @@
-backup_dir=/backup-dir
+backup_dir=/home/svc/backup
+clone_tmp_dir=/home/svc/git-clone

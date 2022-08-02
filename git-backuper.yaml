@@ -55,7 +55,7 @@ spec:
               - name: backup-conf
                 mountPath: /utils
               - name: backup-dir
-                mountPath: /backup-dir
+                mountPath: /home/svc/backup
           volumes:
           - name: backup-conf
             configMap:
