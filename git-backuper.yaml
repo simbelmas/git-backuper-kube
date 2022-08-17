@@ -35,7 +35,7 @@ metadata:
   labels: &git-backuper-labels
     app.kubernetes.io/name: git-backuper
 spec:
-  schedule: "*/1 * * * *"
+  schedule: "* */2 * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
