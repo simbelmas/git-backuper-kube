@@ -14,20 +14,6 @@ metadata:
     app.kubernetes.io/name: git-backuper
 
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: git-backuper-pvc
-  labels:
-    app.kubernetes.io/name: git-backuper
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Mi
-  storageClassName: managed-nfs-storage
----
 apiVersion: batch/v1
 kind: CronJob
 metadata:
